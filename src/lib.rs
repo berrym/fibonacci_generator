@@ -6,7 +6,6 @@ pub mod fib {
         return true;
     }
 
-    /// Print the the n'th Fibonaccci number
     /// Return a tuple of (nth-2) + (nth-1) = n
     #[allow(dead_code)]
     pub fn nth_fibonacci(n: u8) -> (u128, u128, u128) {
@@ -29,7 +28,6 @@ pub mod fib {
         return (a, b, c);
     }
 
-    /// Print the Fibonacci sequence up to the n'th value
     /// Return a vector of Fibonacci numbers up to n'th number
     #[allow(dead_code)]
     pub fn fibonacci_to_nth(n: u8) -> Vec<u128> {
