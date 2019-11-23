@@ -1,15 +1,17 @@
 extern crate fibonacci;
-use::fibonacci::fib;
+use fibonacci::fib;
+extern crate num_format;
+use num_format::{Locale, ToFormattedString};
 use std::io;
 use std::io::Write;
 
-fn main() {
+fn main() -> Result<(), String> {
     println!("Fibonacci Generator\n");
     println!("Calculate the n'th number of the Fibonacci sequence");
-    println!("Type \"quit\" to end the program");
+    println!("Type \"quit\" or \"exit\" to end the program");
 
     loop {
-        let mut n = String::new();
+        let mut input = String::new();
 
         // Print directly to stdout without a newline, flush stdout
         print!("\nEnter a positive integer from 1 to 184: ");
@@ -17,31 +19,37 @@ fn main() {
             .unwrap();
 
         // Read a line of user input
-        io::stdin().read_line(&mut n)
+        io::stdin().read_line(&mut input)
             .expect("Failed to read line");
 
         // If user input is quit, then break program loop
-        if n.trim() == "quit" {
-            break;
+        if input.trim() == "quit" || input.trim() == "exit" {
+            return Ok(println!("Goodbye!"))
         }
 
         // Parse input into a number
-        let n: u8 = match n.trim().parse() {
+        let input: i64 = match input.trim().parse() {
             Ok(num) => num,
-            Err(_) => continue,
+            Err(_) => {
+		println!("Invalid input!");
+		continue
+	    },
         };
 
-        if !fib::validate_input(n) {
-            println!("Invalid number!");
-        } else {
-            let v = fib::fibonacci_to_nth(n);
-            for i in &v {
-                println!("{}", i);
-            }
+        let v = match fib::fibonacci_to_nth(input) {
+	    Ok(vec) => vec,
+	    Err(err) => {
+		println!("{}", err);
+		continue
+	    },
+	};
 
-            let (a, b, c) = fib::nth_fibonacci(n);
-            println!("The {}'th Fibonacci number is {} + {} = {}",
-                     n, a, b, c);
+        for (count, i) in v.iter().enumerate() {
+            println!("{}: {}", count, i.to_formatted_string(&Locale::en));
         }
+
+        let nth = fib::nth_fibonacci(input)?;
+	println!("The {}'th Fibonacci number is {}",
+		 input, nth.to_formatted_string(&Locale::en));
     }
 }

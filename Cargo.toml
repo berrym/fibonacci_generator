@@ -12,4 +12,13 @@ path = "src/lib.rs"
 name = "fibonacci-interactive"
 path = "src/fibonacci-interactive.rs"
 
+#[[bin]]
+#name = "iterative-generator"
+#path = "src/iterative-generator.rs"
+
+#[[bin]]
+#name = "iterator"
+#path = "src/iterator.rs"
+
 [dependencies]
+num-format = "0.4.0"

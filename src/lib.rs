@@ -1,39 +1,36 @@
 pub mod fib {
-    pub fn validate_input(n: u8) -> bool {
-        if n == 0 || n > 184 {
-            return false;
-        }
-        return true;
+    pub fn validate_input(nth: i64) -> Result<bool, String> {
+        if nth > 0 && nth < 185 {
+	    Ok(true)
+        } else {
+            Err("Invalid input!".to_string())
+	}
     }
 
-    /// Return a tuple of (nth-2) + (nth-1) = n
+    /// Return result of a + b = n
     #[allow(dead_code)]
-    pub fn nth_fibonacci(n: u8) -> (u128, u128, u128) {
-        if !validate_input(n) {
-            return (0, 0, 0);
-        }
+    pub fn nth_fibonacci(nth: i64) -> Result<u128, String> {
+	validate_input(nth)?;
 
         let mut a: u128 = 1;
         let mut b: u128 = 1;
-        let mut c: u128 = 0;
+        let mut n: u128 = 0;
 
         for number in 1..185 {
-            c = a + b;
-            if number == n {
+            n = a + b;
+            if number == nth {
                 break;
-            };
+            }
             a = b;
-            b = c;
+            b = n;
         }
-        return (a, b, c);
+        Ok(n)
     }
 
     /// Return a vector of Fibonacci numbers up to n'th number
     #[allow(dead_code)]
-    pub fn fibonacci_to_nth(n: u8) -> Vec<u128> {
-        if !validate_input(n) {
-            return Vec::new()
-        }
+    pub fn fibonacci_to_nth(nth: i64) -> Result<Vec<u128>, String> {
+	validate_input(nth)?;
 
         let mut v: Vec<u128> = Vec::new();
         let mut a: u128 = 1;
@@ -41,16 +38,35 @@ pub mod fib {
 
         v.push(b);
 
-        for number in 1..n + 1 {
+	let limit = nth + 1;
+        for number in 1..limit {
             let c: u128 = a + b;
             a = b;
             b = c;
             v.push(c);
 
-            if number == n {
+            if number == nth {
                 break;
             }
         }
-        v
+        Ok(v)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_nth_fibonacci() -> Result<(), String> {
+	assert_eq!(fib::nth_fibonacci(5), Ok(13));
+	Ok(())
+    }
+
+    #[test]
+    fn test_fibonacci_to_nth() -> Result<(), String> {
+	let v = vec![1, 2, 3, 5, 8, 13];
+	assert_eq!(fib::fibonacci_to_nth(5), Ok(v));
+	Ok(())
     }
 }
