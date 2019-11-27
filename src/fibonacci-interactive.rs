@@ -49,7 +49,12 @@ fn main() -> Result<(), String> {
         }
 
         let nth = fib::nth_fibonacci(input)?;
-	println!("The {}'th Fibonacci number is {}",
-		 input, nth.to_formatted_string(&Locale::en));
+	match input {
+	    1 => println!("The 1'st Fibonacci number is {}", nth),
+	    2 => println!("The 2'nd Fibonacci number is {}", nth),
+	    3 => println!("The 3'rd Fibonacci number is {}", nth),
+	    _ => println!("The {}'th Fibonacci number is {}",
+			  input, nth.to_formatted_string(&Locale::en)),
+	};
     }
 }
