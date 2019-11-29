@@ -1,11 +1,12 @@
+use std::error::Error;
+use std::io;
+use std::io::Write;
 extern crate fibonacci;
 use fibonacci::fib;
 extern crate num_format;
 use num_format::{Locale, ToFormattedString};
-use std::io;
-use std::io::Write;
 
-fn main() -> Result<(), String> {
+fn main() -> Result<(), Box<dyn Error>> {
     println!("Fibonacci Generator\n");
     println!("Calculate the n'th number of the Fibonacci sequence");
     println!("Type \"quit\" or \"exit\" to end the program");
@@ -55,6 +56,6 @@ fn main() -> Result<(), String> {
 	    3 => println!("The 3'rd Fibonacci number is {}", nth),
 	    _ => println!("The {}'th Fibonacci number is {}",
 			  input, nth.to_formatted_string(&Locale::en)),
-	};
+	}
     }
 }

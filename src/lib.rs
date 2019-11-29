@@ -1,5 +1,5 @@
 pub mod fib {
-    pub fn validate_input(nth: i64) -> Result<bool, String> {
+    fn validate_input(nth: i64) -> Result<bool, String> {
         if nth > 0 && nth < 185 {
 	    Ok(true)
         } else {
