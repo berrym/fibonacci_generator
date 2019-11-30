@@ -51,15 +51,13 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_nth_fibonacci() -> Result<(), String> {
+    fn test_nth_fibonacci() {
         assert_eq!(fib::nth_fibonacci(7), Ok(13));
-        Ok(())
     }
 
     #[test]
-    fn test_fibonacci_to_nth() -> Result<(), String> {
+    fn test_fibonacci_to_nth() {
         let v = vec![0, 1, 1, 2, 3, 5, 8, 13];
         assert_eq!(fib::fibonacci_to_nth(7), Ok(v));
-        Ok(())
     }
 }
