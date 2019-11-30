@@ -15,7 +15,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         let mut input = String::new();
 
         // Print directly to stdout without a newline, flush stdout
-        print!("\nEnter a positive integer from 1 to 184: ");
+        print!("\nEnter a number up to 185: ");
         io::stdout().flush().unwrap();
 
         // Read a line of user input

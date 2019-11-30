@@ -1,6 +1,6 @@
 [package]
 name = "fibonacci_generator"
-version = "0.1.1"
+version = "0.1.2"
 authors = ["Michael Berry <trismegustis@gmail.com>"]
 edition = "2018"
 
