@@ -2,7 +2,7 @@ use std::error::Error;
 use std::io;
 use std::io::Write;
 extern crate fibonacci;
-use fibonacci::fib;
+use fibonacci::fib::{fibonacci_to_nth, nth_fibonacci};
 extern crate num_format;
 use num_format::{Locale, ToFormattedString};
 
@@ -29,7 +29,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         }
 
         // Parse input into a number
-        let input: i64 = match input.trim().parse() {
+        let input: isize = match input.trim().parse() {
             Ok(num) => num,
             Err(_) => {
                 println!("Invalid input!");
@@ -37,7 +37,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             }
         };
 
-        let v = match fib::fibonacci_to_nth(input) {
+        let v = match fibonacci_to_nth(input) {
             Ok(vec) => vec,
             Err(err) => {
                 println!("{}", err);
@@ -49,7 +49,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             println!("{}: {}", count, i.to_formatted_string(&Locale::en));
         }
 
-        let nth = fib::nth_fibonacci(input)?;
+        let nth = nth_fibonacci(input)?;
         match input {
             1 => println!("The 1'st Fibonacci number is {}", nth),
             2 => println!("The 2'nd Fibonacci number is {}", nth),
