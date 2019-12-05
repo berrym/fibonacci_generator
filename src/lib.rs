@@ -1,19 +1,19 @@
 pub mod fib {
     use std::mem::replace;
 
-    fn validate_input(nth: isize) -> Result<bool, String> {
+    fn validate_input(nth: isize) -> Result<bool, &'static str> {
         if nth >= 0 && nth < 186 {
             Ok(true)
         } else if nth > 185 {
-            Err(String::from("Number entered is too big!"))
+            Err("Number entered is too big!")
         } else {
-            Err(String::from("Number cannot be negative!"))
+            Err("Number cannot be negative!")
         }
     }
 
     /// Calculate n'th Fibonacci number
     #[allow(dead_code)]
-    pub fn nth_fibonacci(nth: isize) -> Result<u128, String> {
+    pub fn nth_fibonacci(nth: isize) -> Result<u128, &'static str> {
         validate_input(nth)?;
 
         let mut f0: u128 = 0;
@@ -28,7 +28,7 @@ pub mod fib {
 
     /// Return a vector of Fibonacci numbers up to n'th number
     #[allow(dead_code)]
-    pub fn fibonacci_to_nth(nth: isize) -> Result<Vec<u128>, String> {
+    pub fn fibonacci_to_nth(nth: isize) -> Result<Vec<u128>, &'static str> {
         validate_input(nth)?;
 
         let mut v: Vec<u128> = Vec::new();
