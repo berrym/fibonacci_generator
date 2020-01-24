@@ -1,3 +1,34 @@
+use getargs::{self, Opt, Options};
+
+#[derive(Default, Debug)]
+pub struct CommandLineArguments<'a> {
+    pub nth: u32,
+    pub to_nth: u32,
+    pub interactive: bool,
+    pub help: bool,
+    positional_args: &'a [String],
+}
+
+pub fn parse_command_line<'a>(
+    opts: &'a Options<'a, String>,
+) -> getargs::Result<CommandLineArguments<'a>> {
+    let mut result = CommandLineArguments::default();
+    while let Some(opt) = opts.next() {
+        match opt? {
+            // -e EXPRESSION, or -eEXPRESSION, or
+            // --execute EXPRESSION, or --execute=EXPRESSION
+            Opt::Short('n') | Opt::Long("nth") => result.nth = opts.value()?,
+            Opt::Short('N') | Opt::Long("to_nth") => result.to_nth = opts.value()?,
+            Opt::Short('i') | Opt::Long("interactive") => result.interactive = true,
+            Opt::Short('h') | Opt::Long("help") => result.help = true,
+            // Unknown option
+            opt => return Err(getargs::Error::UnknownOpt(opt)),
+        }
+    }
+
+    Ok(result)
+}
+
 pub mod fib {
     use std::mem::replace;
 
@@ -12,7 +43,6 @@ pub mod fib {
     }
 
     /// Calculate n'th Fibonacci number
-    #[allow(dead_code)]
     pub fn nth_fibonacci(nth: isize) -> Result<u128, &'static str> {
         validate_input(nth)?;
 
@@ -27,7 +57,6 @@ pub mod fib {
     }
 
     /// Return a vector of Fibonacci numbers up to n'th number
-    #[allow(dead_code)]
     pub fn fibonacci_to_nth(nth: isize) -> Result<Vec<u128>, &'static str> {
         validate_input(nth)?;
 
