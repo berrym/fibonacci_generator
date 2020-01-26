@@ -59,7 +59,7 @@ fn help() {
 }
 
 fn run_nth_fibonacci(n: isize) {
-    // Determine the maxmimum value for vector below
+    // Determine the maxmimum value for the vectors below
     let limit = match nth_fibonacci(n) {
         Ok(n) => n,
         Err(e) => {
@@ -68,19 +68,28 @@ fn run_nth_fibonacci(n: isize) {
         }
     };
 
-    // List of of 3 + 10..limit
-    let mut three_plus_tens: Vec<u128> = vec![3];
-    for i in (3..limit).step_by(10) {
-        three_plus_tens.push(i);
-    }
+    // Vectors of numbers ending in 2 and 3
+    let twos = (1..=limit).skip(1).step_by(10).collect::<Vec<u128>>();
+    let threes = (1..=limit).skip(2).step_by(10).collect::<Vec<u128>>();
 
-    let _ = match nth_fibonacci(n) {
+    match nth_fibonacci(n) {
         Ok(nth) => match n {
             // Try for proper grammar, 1'st, 2'nd, 3'rd etc
             1 => println!("The 1'st Fibonacci number is {}", nth),
-            2 => println!("The 2'nd Fibonacci number is {}", nth),
             _ => {
-                for &i in three_plus_tens.iter() {
+                // Numbers ending in two
+                for &i in twos.iter() {
+                    if i == n.try_into().unwrap() {
+                        println!(
+                            "The {}'nd Fibonacci number is {}",
+                            n,
+                            nth.to_formatted_string(&Locale::en)
+                        );
+                        return;
+                    }
+                }
+                // Numbers ending in three
+                for &i in threes.iter() {
                     if i == n.try_into().unwrap() {
                         println!(
                             "The {}'rd Fibonacci number is {}",
@@ -90,7 +99,6 @@ fn run_nth_fibonacci(n: isize) {
                         return;
                     }
                 }
-
                 // Everything else
                 println!(
                     "The {}'th Fibonacci number is {}",

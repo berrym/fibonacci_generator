@@ -44,14 +44,16 @@ Copyright 2020
 Michael Berry <trismegustis@gmail.com>
 
 ## Version History
+* 0.1.5
+    * Improved grammar when printing singular results
 * 0.1.4
     * Use getargs to process command line
 	* Split main binary into multiple functions
 	* Added this README.md and LICENSE file
 * 0.1.3
-    * Refactoring.
+    * Refactoring
 * 0.1.2
-    * Refactoring.
+    * Refactoring
 * 0.1.0
     * Initial Release
 
