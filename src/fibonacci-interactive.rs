@@ -77,6 +77,15 @@ fn run_nth_fibonacci(n: isize) {
         Some(nth) => {
             // Try for proper grammar, 1'st, 2'nd, 3'rd etc
             // Numbers ending in one
+            if n == 11 {
+                // Eleven is a special case for ones
+                println!(
+                    "The {}'th Fibonacci number is {}",
+                    n,
+                    nth.to_formatted_string(&Locale::en)
+                );
+                return;
+            }
             for &i in ones.iter() {
                 if i == n.try_into().unwrap() {
                     println!(
