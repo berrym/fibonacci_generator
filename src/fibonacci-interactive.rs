@@ -7,7 +7,6 @@ use clap::{App, Arg};
 use num_format::{Locale, ToFormattedString};
 
 fn main() -> Result<(), Box<dyn Error>> {
-    // Parse command line arguments
     // Parse command line
     let cli = App::new("Fibonacci Generator")
         .version("0.1.6")
@@ -81,7 +80,7 @@ fn run_nth_fibonacci(n: isize) {
             for &i in ones.iter() {
                 if i == n.try_into().unwrap() {
                     println!(
-                        "The {}'nd Fibonacci number is {}",
+                        "The {}'st Fibonacci number is {}",
                         n,
                         nth.to_formatted_string(&Locale::en)
                     );
