@@ -1,6 +1,6 @@
 [package]
 name = "fibonacci_generator"
-version = "0.1.5"
+version = "0.1.6"
 authors = ["Michael Berry <trismegustis@gmail.com>"]
 edition = "2018"
 
@@ -13,5 +13,5 @@ name = "fibonacci-interactive"
 path = "src/fibonacci-interactive.rs"
 
 [dependencies]
-getargs = "0.4.1"
+clap = "2.33.0"
 num-format = "0.4.0"

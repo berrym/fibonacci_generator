@@ -1,125 +1,135 @@
-use std::{convert::TryInto, env, error::Error, io, io::Write, process};
+use std::{convert::TryInto, error::Error, io, io::Write, process};
 
-use fibonacci::{
-    fib::{fibonacci_to_nth, nth_fibonacci},
-    parse_command_line,
-};
+use fibonacci::fib::{fibonacci_to_nth, nth_fibonacci};
 
-use getargs::Options;
+use clap::{App, Arg};
+
 use num_format::{Locale, ToFormattedString};
 
 fn main() -> Result<(), Box<dyn Error>> {
     // Parse command line arguments
-    let args: Vec<_> = env::args().skip(1).collect();
-    let opts = Options::new(&args);
-    let options = match parse_command_line(&opts) {
-        Ok(o) => o,
-        Err(e) => {
-            eprintln!("usage error: {}", e);
-            process::exit(1);
-        }
-    };
+    // Parse command line
+    let cli = App::new("Fibonacci Generator")
+        .version("0.1.6")
+        .author("Michael Berry <trismegustis@gmail.com>")
+        .about("Generate the Fibonacci series")
+        .arg(
+            Arg::with_name("fibonacci_to")
+                .short("f")
+                .long("fibonacci-to")
+                .help("Generate Fibonacci series up to N")
+                .takes_value(true),
+        )
+        .arg(
+            Arg::with_name("nth_fibonacci")
+                .short("F")
+                .long("nth-fibonacci")
+                .help("Generate Fibonacci series up to N")
+                .takes_value(true),
+        )
+        .arg(
+            Arg::with_name("interactive")
+                .short("i")
+                .long("interactive")
+                .help("Interactive program"),
+        )
+        .get_matches();
 
-    // Print help message and exit
-    if options.help {
-        help();
-        process::exit(0);
-    }
-
-    // Run one of the two Fibonacci commands, an interactive program,
-    // or display a help message
-    if options.nth > 0 {
-        let n: isize = options.nth.try_into().unwrap();
-        run_nth_fibonacci(n);
-    } else if options.to_nth > 0 {
-        let n: isize = options.to_nth.try_into().unwrap();
-        run_fibonacci_to_nth(n);
-    } else if options.interactive {
+    if cli.is_present("fibonacci_to") {
+        if let Some(n) = cli.value_of("fibonacci_to") {
+            match n.parse() {
+                Ok(n) => run_fibonacci_to_nth(n),
+                Err(e) => println!("Error: {}", e),
+            }
+            return Ok(());
+        };
+    } else if cli.is_present("nth_fibonacci") {
+        if let Some(n) = cli.value_of("nth_fibonacci") {
+            match n.parse() {
+                Ok(n) => run_nth_fibonacci(n),
+                Err(e) => println!("Error: {}", e),
+            }
+            return Ok(());
+        };
+    } else if cli.is_present("interactive") {
         interactive()?;
     } else {
-        help();
+        println!("{}\n\nTry passing --help for more information", cli.usage());
     }
-
     Ok(())
-}
-
-fn help() {
-    println!("Interactive Fibonacci Program Help\n");
-    println!("Commands can be written -e EXPRESSION, or -eEXPRESSION, or");
-    println!("--execute EXPRESSION, or --execute=EXPRESSION");
-    println!("Valid Commands:\n");
-    println!("-n num or --nth num");
-    println!("\tprint the n'th Fibonacci number\n");
-    println!("-N num or --to_nth num");
-    println!("\tprint a list of Fibonacci numbers up to the n'th element\n");
-    println!("-i or --interactive");
-    println!("\trun an interactive version of the program\n");
-    println!("-h or --help");
-    println!("\tprint this help message \u{1F600}\n");
 }
 
 fn run_nth_fibonacci(n: isize) {
     // Determine the maxmimum value for the vectors below
     let limit = match nth_fibonacci(n) {
-        Ok(n) => n,
-        Err(e) => {
-            println!("Error: {}", e);
+        Some(n) => n,
+        None => {
+            println!("Error occured");
             process::exit(1);
         }
     };
 
-    // Vectors of numbers ending in 2 and 3
-    let twos = (1..=limit).skip(1).step_by(10).collect::<Vec<u128>>();
-    let threes = (1..=limit).skip(2).step_by(10).collect::<Vec<u128>>();
+    // Vectors of numbers ending in 1, 2 and 3
+    let ones = (1..=limit).step_by(10).collect::<Vec<_>>();
+    let twos = (1..=limit).skip(1).step_by(10).collect::<Vec<_>>();
+    let threes = (1..=limit).skip(2).step_by(10).collect::<Vec<_>>();
 
     match nth_fibonacci(n) {
-        Ok(nth) => match n {
+        Some(nth) => {
             // Try for proper grammar, 1'st, 2'nd, 3'rd etc
-            1 => println!("The 1'st Fibonacci number is {}", nth),
-            _ => {
-                // Numbers ending in two
-                for &i in twos.iter() {
-                    if i == n.try_into().unwrap() {
-                        println!(
-                            "The {}'nd Fibonacci number is {}",
-                            n,
-                            nth.to_formatted_string(&Locale::en)
-                        );
-                        return;
-                    }
+            // Numbers ending in one
+            for &i in ones.iter() {
+                if i == n.try_into().unwrap() {
+                    println!(
+                        "The {}'nd Fibonacci number is {}",
+                        n,
+                        nth.to_formatted_string(&Locale::en)
+                    );
+                    return;
                 }
-                // Numbers ending in three
-                for &i in threes.iter() {
-                    if i == n.try_into().unwrap() {
-                        println!(
-                            "The {}'rd Fibonacci number is {}",
-                            n,
-                            nth.to_formatted_string(&Locale::en)
-                        );
-                        return;
-                    }
-                }
-                // Everything else
-                println!(
-                    "The {}'th Fibonacci number is {}",
-                    n,
-                    nth.to_formatted_string(&Locale::en)
-                );
             }
-        },
-        Err(e) => {
-            println!("Error: {}", e);
+            // Numbers ending in two
+            for &i in twos.iter() {
+                if i == n.try_into().unwrap() {
+                    println!(
+                        "The {}'nd Fibonacci number is {}",
+                        n,
+                        nth.to_formatted_string(&Locale::en)
+                    );
+                    return;
+                }
+            }
+            // Numbers ending in three
+            for &i in threes.iter() {
+                if i == n.try_into().unwrap() {
+                    println!(
+                        "The {}'rd Fibonacci number is {}",
+                        n,
+                        nth.to_formatted_string(&Locale::en)
+                    );
+                    return;
+                }
+            }
+            // Everything else
+            println!(
+                "The {}'th Fibonacci number is {}",
+                n,
+                nth.to_formatted_string(&Locale::en)
+            );
+        }
+        None => {
+            println!("Error occured");
             process::exit(1);
         }
-    };
+    }
 }
 
 fn run_fibonacci_to_nth(n: isize) {
     // Create a vector of Fibonacci numbers up to the n'th element
     let vec = match fibonacci_to_nth(n) {
-        Ok(v) => v,
-        Err(e) => {
-            println!("Error: {}", e);
+        Some(v) => v,
+        None => {
+            println!("Error occured");
             process::exit(1);
         }
     };
