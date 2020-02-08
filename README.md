@@ -44,6 +44,8 @@ Copyright 2020
 Michael Berry <trismegustis@gmail.com>
 
 ## Version History
+* 0.1.7
+    * Grammar rules based on vector analysis removed.
 * 0.1.6
     * Use clap to parse command line
 * 0.1.5

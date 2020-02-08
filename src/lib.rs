@@ -1,57 +1,52 @@
 pub mod fib {
     use std::mem::replace;
 
-    fn validate_input(nth: isize) -> Result<bool, &'static str> {
-        if nth >= 0 && nth < 186 {
-            Ok(true)
-        } else if nth > 185 {
+    fn validate_input(nth: usize) -> Result<bool, &'static str> {
+        if nth > 185 {
             Err("Number entered is too big!")
         } else {
-            Err("Number cannot be negative!")
+            Ok(true)
         }
-    }
-
-    /// Calculate n'th Fibonacci number
-    pub fn nth_fibonacci(nth: isize) -> Option<u128> {
-        validate_input(nth).unwrap();
-
-        let mut f0: u128 = 0;
-        let mut f1: u128 = 1;
-
-        for _ in 0..nth {
-            let f2 = f0 + f1;
-            f0 = replace(&mut f1, f2);
-        }
-        Some(f0)
     }
 
     /// Return a vector of Fibonacci numbers up to n'th number
-    pub fn fibonacci_to_nth(nth: isize) -> Option<Vec<u128>> {
+    pub fn fibonacci_to_nth(nth: usize) -> Option<Vec<u128>> {
         validate_input(nth).unwrap();
 
-        let mut v: Vec<u128> = Vec::new();
+        let mut v: Vec<u128> = vec![0];
         let mut f0: u128 = 0;
         let mut f1: u128 = 1;
 
-        v.push(f0);
-
         for _ in 0..nth {
-            let f2 = f0 + f1;
-            f0 = replace(&mut f1, f2);
-            v.push(f0);
+            if let Some(f2) = f0.checked_add(f1) {
+                f0 = replace(&mut f1, f2);
+                v.push(f0);
+            } else {
+                return None;
+            }
         }
         Some(v)
+    }
+
+    /// Calculate the N'th Fibonacci number
+    pub fn nth_fibonacci(nth: usize) -> Option<u128> {
+        let mut f0: u128 = 0;
+        let mut f1: u128 = 1;
+
+        for _ in 0..nth {
+            if let Some(f2) = f0.checked_add(f1) {
+                f0 = replace(&mut f1, f2);
+            } else {
+                return None;
+            }
+        }
+        Some(f0)
     }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    #[test]
-    fn test_nth_fibonacci() {
-        assert_eq!(fib::nth_fibonacci(7), Some(13));
-    }
 
     #[test]
     fn test_fibonacci_to_nth() {
