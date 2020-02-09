@@ -11,36 +11,50 @@ pub mod fib {
 
     /// Return a vector of Fibonacci numbers up to n'th number
     pub fn fibonacci_to_nth(nth: usize) -> Option<Vec<u128>> {
-        validate_input(nth).unwrap();
+        match validate_input(nth) {
+            Err(e) => {
+                println!("{}", e);
+                None
+            }
+            _ => {
+                let mut v: Vec<u128> = vec![0];
+                let mut f0: u128 = 0;
+                let mut f1: u128 = 1;
 
-        let mut v: Vec<u128> = vec![0];
-        let mut f0: u128 = 0;
-        let mut f1: u128 = 1;
-
-        for _ in 0..nth {
-            if let Some(f2) = f0.checked_add(f1) {
-                f0 = replace(&mut f1, f2);
-                v.push(f0);
-            } else {
-                return None;
+                for _ in 0..nth {
+                    if let Some(f2) = f0.checked_add(f1) {
+                        f0 = replace(&mut f1, f2);
+                        v.push(f0);
+                    } else {
+                        return None;
+                    }
+                }
+                Some(v)
             }
         }
-        Some(v)
     }
 
     /// Calculate the N'th Fibonacci number
     pub fn nth_fibonacci(nth: usize) -> Option<u128> {
-        let mut f0: u128 = 0;
-        let mut f1: u128 = 1;
+        match validate_input(nth) {
+            Err(e) => {
+                println!("{}", e);
+                None
+            }
+            _ => {
+                let mut f0: u128 = 0;
+                let mut f1: u128 = 1;
 
-        for _ in 0..nth {
-            if let Some(f2) = f0.checked_add(f1) {
-                f0 = replace(&mut f1, f2);
-            } else {
-                return None;
+                for _ in 0..nth {
+                    if let Some(f2) = f0.checked_add(f1) {
+                        f0 = replace(&mut f1, f2);
+                    } else {
+                        return None;
+                    }
+                }
+                Some(f0)
             }
         }
-        Some(f0)
     }
 }
 
@@ -52,5 +66,10 @@ mod tests {
     fn test_fibonacci_to_nth() {
         let v = vec![0, 1, 1, 2, 3, 5, 8, 13];
         assert_eq!(fib::fibonacci_to_nth(7), Some(v));
+    }
+
+    #[test]
+    fn test_nth_fibonacci() {
+        assert_eq!(fib::nth_fibonacci(7), Some(13));
     }
 }
