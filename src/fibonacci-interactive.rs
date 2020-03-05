@@ -13,7 +13,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             Arg::with_name("Fibonacci to N'th")
                 .short("f")
                 .long("fibonacci-to")
-                .help("Generate Fibonacci series up to N")
+                .help("Generate Fibonacci series up to N'th number")
                 .takes_value(true),
         )
         .arg(
@@ -35,14 +35,14 @@ fn main() -> Result<(), Box<dyn Error>> {
         if let Some(n) = cli.value_of("Fibonacci to N'th") {
             match n.parse() {
                 Ok(n) => run_fibonacci_to_nth(n)?,
-                Err(e) => return Ok(eprintln!("Error parsing command line: {}", e)),
+                Err(e) => eprintln!("Error: {}", e),
             }
         };
     } else if cli.is_present("N'th Fibonacci") {
         if let Some(n) = cli.value_of("N'th Fibonacci") {
             match n.parse() {
                 Ok(n) => run_nth_fibonacci(n)?,
-                Err(e) => return Ok(eprintln!("Error parsing command line: {}", e)),
+                Err(e) => eprintln!("Error: {}", e),
             }
         };
     } else if cli.is_present("interactive") {
