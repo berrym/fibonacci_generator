@@ -6,14 +6,14 @@ use std::{error::Error, io, io::Write};
 fn main() -> Result<(), Box<dyn Error>> {
     // Parse command line
     let cli = App::new("Fibonacci Generator")
-        .version("0.1.7")
+        .version("0.1.8")
         .author("Michael Berry <trismegustis@gmail.com>")
-        .about("Generate the Fibonacci series")
+        .about("Generate the Fibonacci sequence")
         .arg(
             Arg::with_name("Fibonacci to N'th")
                 .short("f")
                 .long("fibonacci-to")
-                .help("Generate Fibonacci series up to N'th number")
+                .help("Generate Fibonacci sequence up to N'th number")
                 .takes_value(true),
         )
         .arg(
@@ -35,14 +35,14 @@ fn main() -> Result<(), Box<dyn Error>> {
         if let Some(n) = cli.value_of("Fibonacci to N'th") {
             match n.parse() {
                 Ok(n) => run_fibonacci_to_nth(n)?,
-                Err(e) => eprintln!("Error: {}", e),
+                Err(e) => eprintln!("Error: {}", e)
             }
         };
     } else if cli.is_present("N'th Fibonacci") {
         if let Some(n) = cli.value_of("N'th Fibonacci") {
             match n.parse() {
                 Ok(n) => run_nth_fibonacci(n)?,
-                Err(e) => eprintln!("Error: {}", e),
+                Err(e) => eprintln!("Error: {}", e)
             }
         };
     } else if cli.is_present("interactive") {
@@ -57,7 +57,7 @@ fn run_fibonacci_to_nth(n: usize) -> Result<(), &'static str> {
     // Create a vector of Fibonacci numbers up to the n'th element
     let vec = match fibonacci_to_nth(n) {
         Some(v) => v,
-        None => return Err("fib::fibonacci_to_nth failed"),
+        None => return Err("fib::fibonacci_to_nth failed")
     };
 
     // Iterate the vector and print an enumerated list of numbers
@@ -69,16 +69,16 @@ fn run_fibonacci_to_nth(n: usize) -> Result<(), &'static str> {
 
 fn run_nth_fibonacci(nth: usize) -> Result<(), &'static str> {
     // Calculate the N'th Fibonacci number
-    let result = nth_fibonacci(nth);
-    match result {
-        Some(n) => println!(
+    if let Some(n) = nth_fibonacci(nth) {
+        println!(
             "Element {} in the Fibonacci series is {}",
             nth,
             n.to_formatted_string(&Locale::en)
-        ),
-        None => return Err("fib::nth_fibonacci failed"),
+        );
+        Ok(())
+    } else {
+        Err("fib::nth_fibonacci failed")
     }
-    Ok(())
 }
 
 fn interactive() -> Result<(), Box<dyn Error>> {
