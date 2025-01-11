@@ -1,17 +1,17 @@
 [package]
 name = "fibonacci_generator"
-version = "0.1.8"
+version = "0.2.0"
 authors = ["Michael Berry <trismegustis@gmail.com>"]
-edition = "2018"
+edition = "2021"
 
 [lib]
 name = "fibonacci"
 path = "src/lib.rs"
 
 [[bin]]
-name = "fibonacci-interactive"
-path = "src/fibonacci-interactive.rs"
+name = "fibonacci-generator"
+path = "src/fibonacci-generator.rs"
 
 [dependencies]
-clap = "2.33.0"
+clap = { version = "4.5.26", features = ["derive"] }
 num-format = "0.4.0"

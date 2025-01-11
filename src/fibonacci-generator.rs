@@ -1,72 +1,65 @@
-use clap::{App, Arg};
+use clap::Parser;
 use fibonacci::fib::{fibonacci_to_nth, nth_fibonacci};
 use num_format::{Locale, ToFormattedString};
 use std::{error::Error, io, io::Write};
 
+#[derive(Parser)]
+#[command(arg_required_else_help(true))]
+#[command(version, about, long_about = None)]
+#[command(next_line_help = true)]
+struct Cli {
+    /// Fibonacci numbers to N
+    #[arg(short = 'N', long = "to-nth", value_name = "NUMBER")]
+    to_nth: Option<usize>,
+
+    /// N'th Fibonacci number
+    #[arg(short, long, value_name = "NUMBER")]
+    nth: Option<usize>,
+
+    /// Interactive Fibonacci generator repl
+    #[arg(short, long)]
+    repl: bool,
+}
+
 fn main() -> Result<(), Box<dyn Error>> {
     // Parse command line
-    let cli = App::new("Fibonacci Generator")
-        .version("0.1.8")
-        .author("Michael Berry <trismegustis@gmail.com>")
-        .about("Generate the Fibonacci sequence")
-        .arg(
-            Arg::with_name("Fibonacci to N'th")
-                .short("f")
-                .long("fibonacci-to")
-                .help("Generate Fibonacci sequence up to N'th number")
-                .takes_value(true),
-        )
-        .arg(
-            Arg::with_name("N'th Fibonacci")
-                .short("F")
-                .long("nth-fibonacci")
-                .help("Calculate the N'th Fibonacci number")
-                .takes_value(true),
-        )
-        .arg(
-            Arg::with_name("interactive")
-                .short("i")
-                .long("interactive")
-                .help("Interactive program"),
-        )
-        .get_matches();
+    let cli = Cli::parse();
 
-    if cli.is_present("Fibonacci to N'th") {
-        if let Some(n) = cli.value_of("Fibonacci to N'th") {
-            match n.parse() {
-                Ok(n) => run_fibonacci_to_nth(n)?,
-                Err(e) => eprintln!("Error: {}", e)
-            }
-        };
-    } else if cli.is_present("N'th Fibonacci") {
-        if let Some(n) = cli.value_of("N'th Fibonacci") {
-            match n.parse() {
-                Ok(n) => run_nth_fibonacci(n)?,
-                Err(e) => eprintln!("Error: {}", e)
-            }
-        };
-    } else if cli.is_present("interactive") {
-        interactive()?;
-    } else {
-        eprintln!("{}\n\nTry passing --help for more information", cli.usage());
+    // Print Fibonacci numbers to n'th element
+    if let Some(to_nth) = cli.to_nth.as_ref() {
+        run_fibonacci_to_nth(*to_nth)?;
+        return Ok(());
+    }
+
+    // Print n'th Fibonacci number
+    if let Some(nth) = cli.nth.as_ref() {
+        run_nth_fibonacci(*nth)?;
+        return Ok(());
+    }
+
+    // Interactive repl
+    if cli.repl {
+        interactive()?
     }
     Ok(())
 }
 
+/// Print Fibonacci numbers up to the n'th element
 fn run_fibonacci_to_nth(n: usize) -> Result<(), &'static str> {
     // Create a vector of Fibonacci numbers up to the n'th element
     let vec = match fibonacci_to_nth(n) {
         Some(v) => v,
-        None => return Err("fib::fibonacci_to_nth failed")
+        None => return Err("fib::fibonacci_to_nth failed"),
     };
 
     // Iterate the vector and print an enumerated list of numbers
-    for (index, n) in vec.iter().enumerate() {
-        println!("{}: {}", index, n.to_formatted_string(&Locale::en));
+    for (idx, n) in vec.iter().enumerate() {
+        println!("{}: {}", idx, n.to_formatted_string(&Locale::en));
     }
     Ok(())
 }
 
+/// Print the n'th Fibonacci number
 fn run_nth_fibonacci(nth: usize) -> Result<(), &'static str> {
     // Calculate the N'th Fibonacci number
     if let Some(n) = nth_fibonacci(nth) {
@@ -81,6 +74,7 @@ fn run_nth_fibonacci(nth: usize) -> Result<(), &'static str> {
     }
 }
 
+/// REPL to calculate Fibonacci numbers
 fn interactive() -> Result<(), Box<dyn Error>> {
     println!("Fibonacci Generator\n");
     println!("Calculate the n'th number of the Fibonacci sequence");
