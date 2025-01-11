@@ -64,7 +64,7 @@ fn run_nth_fibonacci(nth: usize) -> Result<(), &'static str> {
     // Calculate the N'th Fibonacci number
     if let Some(n) = nth_fibonacci(nth) {
         println!(
-            "Element {} in the Fibonacci series is {}",
+            "Number {} in the Fibonacci series is {}",
             nth,
             n.to_formatted_string(&Locale::en)
         );
@@ -99,7 +99,7 @@ fn interactive() -> Result<(), Box<dyn Error>> {
         }
 
         // Parse input into a number
-        let input: usize = match input.trim().parse() {
+        let nth: usize = match input.trim().parse() {
             Ok(num) => num,
             Err(_) => {
                 eprintln!("Invalid input!");
@@ -108,10 +108,11 @@ fn interactive() -> Result<(), Box<dyn Error>> {
         };
 
         // Run the Fibonnaci functions
-        if let Err(_) = run_fibonacci_to_nth(input) {
+        if let Err(_) = run_fibonacci_to_nth(nth) {
             continue;
         };
-        if let Err(_) = run_nth_fibonacci(input) {
+        println!();
+        if let Err(_) = run_nth_fibonacci(nth) {
             continue;
         };
     }
